@@ -13,6 +13,7 @@ import com.project.quizapp.exception.GlobalExceptionHandler;
 import com.project.quizapp.exception.GlobalExceptionHandler.ResourceNotFoundException;
 import com.project.quizapp.model.Question;
 import com.project.quizapp.model.Quiz;
+import com.project.quizapp.model.Response;
 import com.project.quizapp.repo.QuestionRepo;
 import com.project.quizapp.repo.QuizRepo;
 
@@ -56,6 +57,24 @@ public class QuizService {
             quesForUsers.add(questionDto);
         }
         return new ResponseEntity<>(quesForUsers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Quiz not found with the given id: " + id));
+        List<Question> questions = quiz.getQuestions();
+        int rightAns = 0;
+        int i = 0;
+        for(Response response : responses){
+           for(Question question : questions){
+                if(question.getId().equals(response.getId())){
+                    if (response.getResponse().equals(question.getRightAnswer())) {
+                        rightAns++;
+                    }
+                    break;
+                }
+           }
+        }
+        return new ResponseEntity<>(rightAns, HttpStatus.OK) ;
     }
 
 }

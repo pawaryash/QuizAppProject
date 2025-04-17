@@ -23,6 +23,7 @@ public class Question {
     private String option4;
     private String difficultyLevel;
     private String category;
+    private String rightAnswer;
 
      @ManyToMany(mappedBy = "questions")
     private List<Quiz> quizzes;
